@@ -23,8 +23,8 @@ class CustomJSONEncoder(json.JSONEncoder):
 configuration = Configuration(
     host="https://sandbox.plaid.com",
     api_key={
-        'clientId': '67d8b031b5155d00241372fd',
-        'secret': '3f085ffe59f574eb84790ac935e1e1',
+        'clientId': 'plaid_client_id',
+        'secret': 'plaid_secret',
     }
 )
 
