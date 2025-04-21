@@ -1,129 +1,109 @@
 import pandas as pd
-import torch
-import torch.nn.functional as F
-from torch_geometric.data import HeteroData
-from torch_geometric.nn import HeteroConv, SAGEConv, Linear
+import json
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import OrdinalEncoder, StandardScaler
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+import os
 
-# Load and preprocess data
-transactions = pd.read_csv('../Data/csv/Product Data.csv')
-user_data = pd.read_csv('../Data/csv/Social Media Data.csv')
+# Load datasets
+file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'Data', 'csv', 'SocialMediaData.csv')
+social_media = pd.read_csv(file_path)
+file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'Data', 'csv', 'ProductData.csv')
+product_data = pd.read_csv(file_path)
+social_media = social_media.rename(columns={'Location': 'Country'})
 
-# Step 1: Analyze product trends
-product_trends = transactions.groupby('Product Category').agg({
-    'Units Sold': 'sum',
-    'Total Revenue': 'sum'
-}).reset_index()
+# Define features explicitly
+numeric_features = ['Engagement', 'Time Spent On Video', 'Scroll Rate', 
+                    'ProductivityLoss', 'Addiction Level']
+categorical_features = ['Platform', 'Category', 'Video Category']
 
-# Step 2: Demographic analysis
-user_data['AgeGroup'] = pd.cut(user_data['Age'], bins=[0, 18, 25, 35, 50, 100],
-                              labels=['<18', '18-24', '25-34', '35-49', '50+'])
-user_data['Demographic'] = user_data['AgeGroup'].astype(str) + "_" + user_data['Location']
+# Create preprocessing pipeline
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), numeric_features),
+        ('cat', OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1), categorical_features)
+    ],
+    remainder='drop'
+)
 
-# Step 3: Platform preference
-platform_preference = user_data.groupby(['Demographic', 'Platform']).size().reset_index(name='Count')
+# Create full pipeline
+model = Pipeline([
+    ('preprocessor', preprocessor),
+    ('regressor', RandomForestRegressor(n_estimators=100, random_state=42))
+])
 
-# Create mappings
-product_categories = product_trends['Product Category'].unique()
-demographics = user_data['Demographic'].unique()
-platforms = user_data['Platform'].unique()
+# Prepare training data
+merged_data = pd.merge(social_media, product_data, on='Country')
+X_train = merged_data[numeric_features + categorical_features]
+y_train = merged_data['Sales']
 
-product_map = {cat: idx for idx, cat in enumerate(product_categories)}
-demo_map = {demo: idx for idx, demo in enumerate(demographics)}
-platform_map = {plat: idx for idx, plat in enumerate(platforms)}
+# Train model
+model.fit(X_train, y_train)
 
-# Build heterogeneous graph
-data = HeteroData()
+def recommend_platforms(product_name):
+    # Validate product data structure
+    required_product_columns = {'Product Name', 'Category', 'Sales'}
+    if not required_product_columns.issubset(product_data.columns):
+        missing = required_product_columns - set(product_data.columns)
+        raise ValueError(f"Missing columns in product data: {missing}")
 
-# Node features
-data['product'].x = torch.randn(len(product_categories), 32)
-data['demographic'].x = torch.randn(len(demographics), 32)
-data['platform'].x = torch.randn(len(platforms), 32)
+    # Check if product exists
+    product_match = product_data[product_data['Product Name'] == product_name]
+    if product_match.empty:
+        raise ValueError(f"Product '{product_name}' not found in dataset")
+    product_category = product_match['Category'].values[0]
 
-# Create edges with dimensional validation
-def create_edges(edge_list, default_shape=(2, 0)):
-    if len(edge_list) == 0:
-        return torch.empty(default_shape, dtype=torch.long)
-    tensor = torch.tensor(edge_list, dtype=torch.long).t()
-    return tensor.contiguous() if tensor.dim() == 2 else tensor.view(2, -1)
+    # Validate social media data structure
+    required_social_columns = {'Country', 'Platform', 'Engagement', 
+                              'Time Spent On Video', 'Scroll Rate',
+                              'ProductivityLoss', 'Addiction Level'}
+    if not required_social_columns.issubset(social_media.columns):
+        missing = required_social_columns - set(social_media.columns)
+        raise ValueError(f"Missing columns in social media data: {missing}")
 
-# Product-Demographic edges
-product_demo_edges = []
-for _, row in user_data.iterrows():
-    if row['Video Category'] in product_map and row['Demographic'] in demo_map:
-        product_idx = product_map[row['Video Category']]
-        demo_idx = demo_map[row['Demographic']]
-        product_demo_edges.append([product_idx, demo_idx])
-data['product', 'targets', 'demographic'].edge_index = create_edges(product_demo_edges)
-
-# Demographic-Platform edges
-demo_platform_edges = []
-for _, row in platform_preference.iterrows():
-    if row['Demographic'] in demo_map and row['Platform'] in platform_map:
-        demo_idx = demo_map[row['Demographic']]
-        plat_idx = platform_map[row['Platform']]
-        demo_platform_edges.append([demo_idx, plat_idx])
-data['demographic', 'uses', 'platform'].edge_index = create_edges(demo_platform_edges)
-
-# Self-loop edges for products
-self_edges = [[i, i] for i in range(len(product_categories))]
-data['product', 'self', 'product'].edge_index = create_edges(self_edges)
-
-# Heterogeneous GNN Model
-class MarketingGNN(torch.nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.conv1 = HeteroConv({
-            ('product', 'targets', 'demographic'): SAGEConv((32, 32), 64),
-            ('demographic', 'rev_targets', 'product'): SAGEConv((32, 32), 64),
-            ('demographic', 'uses', 'platform'): SAGEConv((32, 32), 64),
-            ('platform', 'rev_uses', 'demographic'): SAGEConv((32, 32), 64),
-            ('product', 'self', 'product'): SAGEConv((32, 32), 64),
-        }, aggr='mean')
-        
-        self.lin = Linear(64, len(platforms))
-
-    def forward(self, x_dict, edge_index_dict):
-        x_dict = self.conv1(x_dict, edge_index_dict)
-        x_dict = {key: F.leaky_relu(x) for key, x in x_dict.items()}
-        return self.lin(x_dict['product'])
-
-# Initialize and train
-model = MarketingGNN()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-
-# Training loop
-for epoch in range(100):
-    model.train()
-    out = model(data.x_dict, data.edge_index_dict)
+    recommendations = {}
     
-    # Create targets with error handling
-    try:
-        merged = pd.merge(
-            user_data[['Video Category']],
-            transactions[['Product Category']],
-            left_on='Video Category',
-            right_on='Product Category',
-            how='inner'
-        )
-        product_platform_counts = merged.groupby(['Product Category', 'Platform']).size()
-        target_platforms = product_platform_counts.groupby('Product Category').idxmax().map(
-            lambda x: platform_map.get(x[1], 0)
-        ).reindex(product_categories, fill_value=0)
-    except KeyError:
-        target_platforms = pd.Series([0]*len(product_categories), index=product_categories)
-    
-    loss = F.cross_entropy(out, torch.tensor(target_platforms.values, dtype=torch.long))
-    optimizer.zero_grad()
-    loss.backward()
-    optimizer.step()
-    print(f'Epoch {epoch+1}, Loss: {loss.item():.4f}')
+    for country in social_media['Country'].unique():
+        country_data = social_media[social_media['Country'] == country]
+        platform_scores = {}
 
-# Save model
-torch.save({
-    'model_state_dict': model.state_dict(),
-    'product_map': product_map,
-    'demo_map': demo_map,
-    'platform_map': platform_map
-}, 'product_platform_gnn.pth')
+        for platform in country_data['Platform'].unique():
+            try:
+                # Get only numeric features explicitly
+                platform_features = country_data[
+                    (country_data['Platform'] == platform)
+                ][numeric_features].mean(numeric_only=True)
+                
+                # Handle potential NaN values from mean calculation
+                if platform_features.isna().any():
+                    print(f"Skipping {platform} in {country} due to missing data")
+                    continue
 
-print("Model successfully trained and saved!")
+                # Get most common video category
+                video_category = country_data['Video Category'].mode()[0] if not country_data['Video Category'].empty else 'Unknown'
+
+                # Create input data with explicit column order
+                input_data = pd.DataFrame([{
+                    **platform_features.to_dict(),
+                    'Platform': platform,
+                    'Category': product_category,
+                    'Video Category': video_category
+                }], columns=numeric_features + categorical_features)
+
+                predicted_sales = model.predict(input_data)[0]
+                platform_scores[platform] = predicted_sales
+                
+            except Exception as e:
+                print(f"Skipping {platform} in {country}: {str(e)}")
+                continue
+
+        if platform_scores:
+            total = sum(platform_scores.values())
+            recommendations[country] = {
+                platform: round((score/total)*100, 2)
+                for platform, score in platform_scores.items()
+            }
+
+    return json.dumps(recommendations, indent=2)
+

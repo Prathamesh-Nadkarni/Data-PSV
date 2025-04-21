@@ -1,0 +1,15 @@
+<mat-form-field class="full-width" appearance="fill">
+  <mat-label>Select a product</mat-label>
+  <input
+    type="text"
+    matInput
+    [formControl]="productControl"
+    [matAutocomplete]="auto"
+    placeholder="Start typing product name"
+  />
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option *ngFor="let option of filteredProducts$ | async" [value]="option">
+      {{ option }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

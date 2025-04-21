@@ -1,0 +1,64 @@
+<div class="add-container">
+  <div class="add-card">
+    <div class="logo-container">
+      <div class="logo-placeholder">
+        <i class="pi pi-plus-circle"></i>
+      </div>
+      <h1>Add Product Sale</h1>
+      <p class="tagline">Enter the details of your product sale</p>
+    </div>
+
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="add-form">
+      <div class="form-grid">
+        <div class="form-group" *ngFor="let field of fields">
+          <div class="input-icon">
+            <i [class]="getFieldIcon(field.name)"></i>
+            <ng-container [ngSwitch]="field.type">
+              <input *ngSwitchCase="'number'" 
+                     [type]="field.type" 
+                     [formControlName]="field.name" 
+                     [id]="field.name" 
+                     [step]="field.step || null"
+                     [placeholder]="'Enter ' + field.label.toLowerCase()" />
+              <input *ngSwitchCase="'date'" 
+                     type="date" 
+                     [formControlName]="field.name" 
+                     [id]="field.name" />
+              <select *ngSwitchCase="'select'" 
+                      [formControlName]="field.name" 
+                      [id]="field.name">
+                <option value="">Select {{ field.label.toLowerCase() }}</option>
+                <option *ngFor="let option of field.options" [value]="option">{{ option }}</option>
+              </select>
+              <input *ngSwitchDefault 
+                     type="text" 
+                     [formControlName]="field.name" 
+                     [id]="field.name"
+                     [placeholder]="'Enter ' + field.label.toLowerCase()" />
+            </ng-container>
+          </div>
+          <div class="error" *ngIf="productForm.get(field.name)?.invalid && (productForm.get(field.name)?.dirty || productForm.get(field.name)?.touched)">
+            <i class="pi pi-exclamation-circle"></i>
+            <span *ngIf="productForm.get(field.name)?.errors?.['required']">{{ field.label }} is required</span>
+            <span *ngIf="productForm.get(field.name)?.errors?.['min']">{{ field.label }} must be positive</span>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="!productForm.valid" class="submit-button">
+        <span>Add Product</span>
+        <i class="pi pi-check"></i>
+      </button>
+    </form>
+
+    <p *ngIf="successMessage" class="success-message">
+      <i class="pi pi-check-circle"></i>
+      {{ successMessage }}
+    </p>
+    
+    <p *ngIf="errorMessage" class="error-message">
+      <i class="pi pi-exclamation-circle"></i>
+      {{ errorMessage }}
+    </p>
+  </div>
+</div>

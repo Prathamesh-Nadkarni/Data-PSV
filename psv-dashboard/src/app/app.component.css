@@ -1,0 +1,145 @@
+.main-header {
+  width: 100%;
+  background: linear-gradient(90deg, #2196f3 0%, #21cbf3 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(33, 150, 243, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  min-height: 64px;
+  flex-wrap: nowrap;
+}
+
+.header-title {
+  font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  margin: 0 1rem;
+  flex: 1;
+  text-align: center;
+}
+
+.menu-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 2.2rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4em;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+.menu-icon:hover,
+.menu-icon:focus {
+  background: rgba(255, 255, 255, 0.2);
+  outline: none;
+}
+
+/* Profile Container Styles */
+.profile-container {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-icon {
+  font-family: 'Material Icons';
+  font-size: 2.4rem;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  padding: 0.4em;
+  color: #fff;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.profile-icon:hover,
+.profile-icon:focus {
+  background: #fff;
+  color: #2196f3;
+  outline: none;
+}
+
+/* Profile Dropdown Styles */
+.profile-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  min-width: 180px;
+  margin-top: 0.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.profile-container:hover .profile-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  color: #546e7a;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-radius: 12px;
+}
+
+.logout-button:hover {
+  background: #f5f5f5;
+  color: #d32f2f;
+}
+
+.logout-button .material-icons {
+  font-size: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    padding: 0.5rem 1rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .header-title {
+    flex: 1 1 100%;
+    text-align: center;
+    margin: 0.5rem 0;
+  }
+
+  .menu-icon,
+  .profile-icon {
+    order: 0;
+  }
+  
+  .profile-dropdown {
+    right: -1rem;
+  }
+}

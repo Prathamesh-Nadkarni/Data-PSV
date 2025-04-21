@@ -4,6 +4,7 @@ import pandas as pd
 from torch_geometric.data import HeteroData
 from torch_geometric.nn import HeteroConv, SAGEConv, Linear
 import os
+import pycountry_convert as pc
 
 # Define the model architecture
 class MarketingGNN(torch.nn.Module):
@@ -23,6 +24,15 @@ class MarketingGNN(torch.nn.Module):
         x_dict = {key: F.leaky_relu(x) for key, x in x_dict.items()}
         return self.lin(x_dict['product'])
 
+def country_to_continent(country_name):
+    """Convert country name to continent using pycountry-convert"""
+    try:
+        country_code = pc.country_name_to_country_alpha2(country_name, cn_name_format="default")
+        continent_code = pc.country_alpha2_to_continent_code(country_code)
+        return pc.convert_continent_code_to_continent_name(continent_code)
+    except:
+        return "Unknown"
+
 # Load model and maps
 base_dir = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(base_dir, 'product_platform_gnn.pth')
@@ -37,7 +47,7 @@ csv_path = os.path.join(base_dir, '..', 'Data', 'csv', 'ProductData.csv')
 
 # Load the CSV file
 transactions = pd.read_csv(csv_path)
-name_to_category = transactions.set_index('Product Name')['Product Category'].to_dict()
+name_to_category = transactions.set_index('Product Name')['Category'].to_dict()
 
 # Re-initialize model
 model = MarketingGNN(num_platforms=len(platform_map))
@@ -69,19 +79,32 @@ def predict_best_platform(product_name: str):
 
     with torch.no_grad():
         out = model(data.x_dict, data.edge_index_dict)
-        pred_platform_idx = out[product_idx].argmax().item()
-        return rev_platform_map[pred_platform_idx]
+        logits = out[product_idx]
+        
+        # Calculate probabilities using softmax
+        probabilities = F.softmax(logits, dim=0)
+        percentages = probabilities * 100
+        
+        # Create platform percentage mapping
+        platform_percentages = {
+            rev_platform_map[i]: round(percent.item(), 2)
+            for i, percent in enumerate(percentages)
+        }
+        
+        best_platform_idx = logits.argmax().item()
+        
+    return {
+        'best_platform': rev_platform_map[best_platform_idx],
+        'platform_percentages': platform_percentages
+    }
 
 
-
-def  get_best_platform(product_name: str):
+def get_best_platform(product_name: str):
     """
     Given a product name, return the best platform to promote it.
     """
     try:
-        best_platform = predict_best_platform(product_name)
-        return best_platform
+        return predict_best_platform(product_name)
     except ValueError as e:
         print(e)
         return None
-    

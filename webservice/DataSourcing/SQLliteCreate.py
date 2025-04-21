@@ -5,6 +5,7 @@ import bcrypt
 from datetime import datetime
 import pandas as pd
 import os
+import sqlite3
 
 def connection(db_path):
     """Create a connection to the SQLite database"""
@@ -141,41 +142,35 @@ def create_and_populate_sales_db(csvData, db_path):
     # Create sales table
     cur.execute('''
         CREATE TABLE IF NOT EXISTS sales (
-            transaction_id INTEGER PRIMARY KEY,
-            date TEXT,
-            product_category TEXT,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            country TEXT,
+            category TEXT,
             product_name TEXT,
-            units_sold INTEGER,
-            unit_price REAL,
-            total_revenue REAL,
-            region TEXT,
-            payment_method TEXT
+            sales REAL,
+            quantity INTEGER
         )
     ''')
 
     for row in csvData:
         cur.execute('''
-            INSERT OR IGNORE INTO sales (
-                transaction_id, date, product_category, product_name, units_sold, unit_price, total_revenue, region, payment_method
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO sales (
+                country, category, product_name, sales, quantity
+            ) VALUES (?, ?, ?, ?, ?)
         ''', (
-            int(row['Transaction ID']),
-            row['Date'],
-            row['Product Category'],
+            row['Country'],
+            row['Category'],
             row['Product Name'],
-            int(row['Units Sold']),
-            float(row['Unit Price']),
-            float(row['Total Revenue']),
-            row['Region'],
-            row['Payment Method']
+            float(row['Sales']),
+            int(row['Quantity'])
         ))
-
+    
     conn.commit()
     conn.close()
 
 
 
-def create_users_db(db_path='users_login.db'):
+
+def create_users_db(db_path):
     """Create secure user database with necessary security fields"""
     conn = connection(db_path)
     cur = conn.cursor()
@@ -183,14 +178,16 @@ def create_users_db(db_path='users_login.db'):
     cur.execute('''
         CREATE TABLE IF NOT EXISTS users (
             user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
+            username TEXT NOT NULL UNIQUE COLLATE NOCASE,
             password_hash TEXT NOT NULL,
+            role TEXT NOT NULL CHECK(role IN ('admin', 'user', 'company')),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             last_login TIMESTAMP,
             failed_attempts INTEGER DEFAULT 0,
             is_locked INTEGER DEFAULT 0,
             lock_until TIMESTAMP,
-            mfa_secret TEXT
+            mfa_secret TEXT,
+            UNIQUE(username, role)
         )
     ''')
     
@@ -201,37 +198,61 @@ def create_users_db(db_path='users_login.db'):
     conn.commit()
     conn.close()
 
-def register_user(username, password):
-    """Register user with bcrypt password hashing"""
-    if not username or not password:
-        raise ValueError("Username and password required")
-        
-    salt = bcrypt.gensalt()
-    hashed_pw = bcrypt.hashpw(password.encode('utf-8'), salt)
+def register_user(username, password, role):
     
     try:
         db_path = 'users_login.db'
         conn = connection(db_path)
         cur = conn.cursor()
+        
+        # Check for existing username+role combo
         cur.execute('''
-            INSERT INTO users (username, password_hash)
-            VALUES (?, ?)
-        ''', (username, hashed_pw))
+            SELECT 1 
+            FROM users 
+            WHERE username = ? AND role = ?
+        ''', (username, role))
+        
+        if cur.fetchone():
+            raise ValueError(f"Username '{username}' already registered as {role}")
+        
+        # Insert new user
+        password_bytes = password.encode('utf-8')
+    
+        # Generate salt and hash
+        salt = bcrypt.gensalt()
+        password_hash = bcrypt.hashpw(password_bytes, salt).decode('utf-8')
+        cur.execute('''
+            INSERT INTO users 
+            (username, password_hash, role) 
+            VALUES (?, ?, ?)
+        ''', (username, password_hash, role))
+        
         conn.commit()
-        return True
-    except sqlite3.IntegrityError:
-        raise ValueError("Username already exists")
+        
+    except sqlite3.IntegrityError as e:
+        error_msg = str(e)
+        if "UNIQUE constraint failed: users.username, users.role" in error_msg:
+            raise ValueError("Username already exists with this role")
+        elif "UNIQUE constraint failed: users.username" in error_msg:
+            raise ValueError("Username exists with different role (old schema)")
+        else:
+            raise ValueError(f"Database error: {error_msg}")
     finally:
-        conn.close()
+        if conn:
+            conn.close()
+
+
+
 
 def authenticate_user(username, password):
-    """Authenticate user with bcrypt and security checks"""
+    """Authenticate user with bcrypt and security checks. 
+    Returns user's role if authenticated, else False."""
     db_path = 'users_login.db'
     conn = connection(db_path)
     cur = conn.cursor()
     
     cur.execute('''
-        SELECT user_id, password_hash, failed_attempts, is_locked, lock_until 
+        SELECT user_id, password_hash, role, failed_attempts, is_locked, lock_until 
         FROM users 
         WHERE username = ?
     ''', (username,))
@@ -239,16 +260,20 @@ def authenticate_user(username, password):
     user = cur.fetchone()
     
     if not user:
-        return False  # Prevent user enumeration by not revealing existence
+        conn.close()
+        return False
     
-    user_id, pw_hash, attempts, is_locked, lock_until = user
+    user_id, pw_hash, role, attempts, is_locked, lock_until = user
     
-    # Check account lock status [15][5]
+    # Check if account is locked
     if is_locked or (lock_until and datetime.now() < datetime.fromisoformat(lock_until)):
+        conn.close()
         return False
         
-    # Verify password [12][1]
-    if bcrypt.checkpw(password.encode('utf-8'), pw_hash):
+    # Check password.
+    password_bytes = password.encode('utf-8')
+    stored_hash_bytes = pw_hash.encode('utf-8')
+    if bcrypt.checkpw(password_bytes, stored_hash_bytes):
         # Reset failed attempts on successful login
         cur.execute('''
             UPDATE users 
@@ -257,9 +282,9 @@ def authenticate_user(username, password):
             WHERE user_id = ?
         ''', (user_id,))
         conn.commit()
-        return True
+        conn.close()
+        return role
     else:
-        # Increment failed attempts [8][15]
         new_attempts = attempts + 1
         lock_status = new_attempts >= 5  # Lock after 5 attempts
         
@@ -271,7 +296,9 @@ def authenticate_user(username, password):
             WHERE user_id = ?
         ''', (new_attempts, lock_status, lock_status, user_id))
         conn.commit()
+        conn.close()
         return False
+
 
 def get_user_security_status(username):
     """Get security-related user info"""
@@ -280,7 +307,7 @@ def get_user_security_status(username):
     cur = conn.cursor()
     
     cur.execute('''
-        SELECT username, created_at, last_login, failed_attempts, is_locked
+        SELECT username, role, created_at, last_login, failed_attempts, is_locked
         FROM users
         WHERE username = ?
     ''', (username,))

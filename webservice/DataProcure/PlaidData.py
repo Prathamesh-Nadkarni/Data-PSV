@@ -23,8 +23,8 @@ class CustomJSONEncoder(json.JSONEncoder):
 configuration = Configuration(
     host="https://sandbox.plaid.com",
     api_key={
-        'clientId': 'plaid_client_id',
-        'secret': 'plaid_secret',
+        'clientId': '67d8b031b5155d00241372fd',
+        'secret': '3f085ffe59f574eb84790ac935e1e1',
     }
 )
 
@@ -39,6 +39,10 @@ users = [
     {"user_id": "user_3", "client_user_id": "unique-id-3"},
     {"user_id": "user_4", "client_user_id": "unique-id-4"},
     {"user_id": "user_5", "client_user_id": "unique-id-5"},
+    {"user_id": "user_6", "client_user_id": "unique-id-6"},
+    {"user_id": "user_7", "client_user_id": "unique-id-7"},
+    {"user_id": "user_8", "client_user_id": "unique-id-8"},
+    {"user_id": "user_9", "client_user_id": "unique-id-9"}
 ]
 
 # Function to create link token for a user
@@ -133,7 +137,7 @@ for user in users:
     all_users_data.append(user_data)
 
 # Saving all users' data to JSON file
-with open("./json/users_data.json", "w") as json_file:
+with open("../Data/json/users_data.json", "w") as json_file:
     json.dump(all_users_data, json_file, indent=4, cls=CustomJSONEncoder)
 
 print("All users' data saved to 'users_data.json'")

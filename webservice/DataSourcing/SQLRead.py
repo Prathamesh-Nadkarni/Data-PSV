@@ -25,3 +25,27 @@ def fetch_sales_by_product(product_name):
     df = pd.read_sql_query(query, conn, params=(product_name,))
     conn.close()
     return df
+
+
+def fetch_all_product_names():
+    query = """
+        SELECT DISTINCT product_name FROM sales
+        ORDER BY product_name
+    """
+    conn = connection("sales_data.db")
+    df = pd.read_sql_query(query, conn)
+    conn.close()
+    return df
+
+
+
+
+def fetch_sales_by_category(product_category):
+    conn = connection("sales_data.db")
+    query = """
+        SELECT * FROM sales
+        WHERE [product_category] = ?
+    """
+    df = pd.read_sql_query(query, conn, params=(product_category,))
+    conn.close()
+    return df

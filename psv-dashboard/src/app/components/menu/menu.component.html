@@ -1,0 +1,72 @@
+<!-- Modern Sidebar Menu -->
+<div class="sidebar-overlay" *ngIf="isOpen" (click)="onClose()"></div>
+
+<div class="sidebar" [class.open]="isOpen">
+  <div class="sidebar-header">
+    <h3>Navigation</h3>
+    <button class="close-button" (click)="onClose()" aria-label="Close menu">
+      <span class="material-icons">close</span>
+    </button>
+  </div>
+  
+  <div class="sidebar-content">
+    <nav>
+      <ul class="menu-list">
+        <!-- Dashboard - For Everyone -->
+        <li class="menu-item">
+          <a routerLink="/dashboard" routerLinkActive="active" (click)="onClose()">
+            <span class="material-icons">dashboard</span>
+            <span>Dashboard</span>
+          </a>
+        </li>
+
+        <!-- User-specific menu items -->
+        <ng-container *ngIf="userRole === 'user'">
+          <li class="menu-item">
+            <a routerLink="/purchases" routerLinkActive="active" (click)="onClose()">
+              <span class="material-icons">shopping_cart</span>
+              <span>My Purchases</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a routerLink="/wishlist" routerLinkActive="active" (click)="onClose()">
+              <span class="material-icons">favorite</span>
+              <span>Wishlist</span>
+            </a>
+          </li>
+        </ng-container>
+
+        <!-- Company-specific menu items -->
+        <ng-container *ngIf="userRole === 'company'">
+          <li class="menu-item">
+            <a routerLink="/products/add" routerLinkActive="active" (click)="onClose()">
+              <span class="material-icons">add_circle</span>
+              <span>Add Product</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a routerLink="/products/manage" routerLinkActive="active" (click)="onClose()">
+              <span class="material-icons">list</span>
+              <span>Manage Products</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a routerLink="/dashboard" routerLinkActive="active" (click)="onClose()">
+              <span class="material-icons">trending_up</span>
+              <span>Sales Analytics</span>
+            </a>
+          </li>
+        </ng-container>
+
+        <!-- Shared menu items -->
+        <li class="menu-item">
+          <a routerLink="/settings" routerLinkActive="active" (click)="onClose()">
+            <span class="material-icons">settings</span>
+            <span>Account Settings</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  
+</div>

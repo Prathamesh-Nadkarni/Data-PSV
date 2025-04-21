@@ -1,0 +1,27 @@
+<header class="main-header" *ngIf="isLoggedIn">
+  <div class="header-content">
+    <!-- Hamburger Icon -->
+    <button class="menu-icon" (click)="toggleMenu()" aria-label="Open menu">
+      <span class="material-icons">menu</span>
+    </button>
+
+    <span class="header-title">Data PSV Dashboard</span>
+
+    <div class="profile-container">
+      <span class="profile-icon material-icons" tabindex="0" aria-label="Profile">
+        account_circle
+      </span>
+      <div class="profile-dropdown">
+        <button class="logout-button" (click)="logout()">
+          <span class="material-icons">logout</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Hamburger Menu Component -->
+<app-menu [isOpen]="menuOpen" (closeMenu)="toggleMenu()" *ngIf="isLoggedIn"></app-menu>
+
+<router-outlet></router-outlet>

@@ -1,0 +1,32 @@
+/* product-dropdown.component.scss */
+.full-width {
+  width: 100%;
+}
+
+mat-form-field {
+  margin: 10px 0;
+}
+
+mat-label {
+  font-weight: bold;
+  color: #1976d2;
+}
+
+mat-input {
+  font-size: 14px;
+}
+
+mat-autocomplete {
+  background-color: white;
+  border: 1px solid #ccc;
+}
+
+mat-option {
+  padding: 8px;
+  font-size: 14px;
+}
+
+mat-option:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
