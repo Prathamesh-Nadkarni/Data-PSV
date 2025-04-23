@@ -34,6 +34,18 @@ export interface CountryPlatformData {
   };
 }
 
+export interface SalesSubmission {
+  transaction_id: string;
+  date: string;
+  product_category: string;
+  product_name: string;
+  units_sold: number;
+  unit_price: number;
+  total_revenue: number;
+  region: string;
+  payment_method: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -294,6 +306,22 @@ export class ProductService {
         "Instagram": 24.46
       }
     };
+  }
+
+  /**
+   * Submit sales data 
+   */
+  submitSalesJob(salesData: SalesSubmission): Observable<any> {
+    console.log('Submitting sales data:', salesData);
+    return this.apiService.post<any>('submit_sales', salesData).pipe(
+      tap(response => {
+        console.log('Sales submission response:', response);
+      }),
+      catchError(error => {
+        console.error('Error submitting sales data:', error);
+        return throwError(() => new Error('Failed to submit sales data: ' + (error.message || 'Unknown error')));
+      })
+    );
   }
 }
 

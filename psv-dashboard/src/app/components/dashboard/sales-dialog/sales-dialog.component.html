@@ -1,0 +1,170 @@
+<p-dialog
+  [visible]="visible"
+  [modal]="true"
+  [resizable]="false"
+  [blockScroll]="true"
+  [contentStyle]="{'overflow': 'auto', 'max-height': '80vh'}"
+  [draggable]="false"
+  [style]="{width: '90%', maxWidth: '700px'}"
+  header="Add Sales Data"
+  (onHide)="hide()">
+
+  <div class="sales-form-container">
+    <p class="form-description">Enter the details of your product sale</p>
+
+    <form [formGroup]="salesForm" (ngSubmit)="onSubmit()" class="sales-form">
+      <div class="form-grid">
+        <!-- Transaction ID -->
+        <div class="field">
+          <label for="transaction_id">Transaction ID</label>
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-hashtag"></i></span>
+            <input pInputText id="transaction_id" formControlName="transaction_id" placeholder="e.g. TX-12345" />
+          </div>
+          <small *ngIf="salesForm.get('transaction_id')?.invalid && salesForm.get('transaction_id')?.touched" class="p-error">
+            Transaction ID is required
+          </small>
+        </div>
+
+        <!-- Date -->
+        <div class="field">
+          <label for="date">Date</label>
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-calendar"></i></span>
+            <p-datepicker
+              formControlName="date"
+              [showIcon]="true"
+              inputId="date"
+              class="w-full"
+            >
+            </p-datepicker>
+
+          </div>
+          <small *ngIf="salesForm.get('date')?.invalid && salesForm.get('date')?.touched" class="p-error">
+            Date is required
+          </small>
+        </div>
+
+        <!-- Product Category -->
+        <div class="field">
+          <label for="product_category">Product Category</label>
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-tag"></i></span>
+            <p-select
+              formControlName="product_category"
+              [options]="categoryOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select a category"
+              [style]="{width: '100%'}">
+            </p-select>
+          </div>
+          <small *ngIf="salesForm.get('product_category')?.invalid && salesForm.get('product_category')?.touched" class="p-error">
+            Product category is required
+          </small>
+        </div>
+
+        <!-- Product Name -->
+        <div class="field">
+          <label for="product_name">Product Name</label>
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-box"></i></span>
+            <input pInputText id="product_name" formControlName="product_name" placeholder="e.g. Smartphone X" />
+          </div>
+          <small *ngIf="salesForm.get('product_name')?.invalid && salesForm.get('product_name')?.touched" class="p-error">
+            Product name is required
+          </small>
+        </div>
+
+        <!-- Units Sold -->
+        <div class="field">
+          <label for="units_sold">Units Sold</label>
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-shopping-cart"></i></span>
+            <p-inputNumber id="units_sold" formControlName="units_sold" [min]="1" [showButtons]="true" buttonLayout="horizontal" spinnerMode="horizontal" inputId="units_sold" decrementButtonClass="p-button-secondary" incrementButtonClass="p-button-secondary" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" [style]="{width: '100%'}"></p-inputNumber>
+          </div>
+          <small *ngIf="salesForm.get('units_sold')?.invalid && salesForm.get('units_sold')?.touched" class="p-error">
+            Units sold must be at least 1
+          </small>
+        </div>
+
+        <!-- Unit Price -->
+        <div class="field">
+          <label for="unit_price">Unit Price</label>
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-dollar"></i></span>
+            <p-inputNumber id="unit_price" formControlName="unit_price" mode="currency" currency="USD" locale="en-US" [min]="0" [style]="{width: '100%'}"></p-inputNumber>
+          </div>
+          <small *ngIf="salesForm.get('unit_price')?.invalid && salesForm.get('unit_price')?.touched" class="p-error">
+            Unit price must be at least 0
+          </small>
+        </div>
+
+        <!-- Total Revenue -->
+        <div class="field">
+          <label for="total_revenue">Total Revenue</label>
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-wallet"></i></span>
+            <p-inputNumber id="total_revenue" formControlName="total_revenue" mode="currency" currency="USD" locale="en-US" [min]="0" [style]="{width: '100%'}"></p-inputNumber>
+          </div>
+          <small *ngIf="salesForm.get('total_revenue')?.invalid && salesForm.get('total_revenue')?.touched" class="p-error">
+            Total revenue must be at least 0
+          </small>
+        </div>
+
+        <!-- Region -->
+        <div class="field">
+          <label for="region">Region</label>
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-map-marker"></i></span>
+            <p-select
+              formControlName="region"
+              [options]="regionOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select a region"
+              [style]="{width: '100%'}">
+            </p-select>
+          </div>
+          <small *ngIf="salesForm.get('region')?.invalid && salesForm.get('region')?.touched" class="p-error">
+            Region is required
+          </small>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="field">
+          <label for="payment_method">Payment Method</label>
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-credit-card"></i></span>
+            <p-select
+              formControlName="payment_method"
+              [options]="paymentOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select a payment method"
+              [style]="{width: '100%'}">
+            </p-select>
+          </div>
+          <small *ngIf="salesForm.get('payment_method')?.invalid && salesForm.get('payment_method')?.touched" class="p-error">
+            Payment method is required
+          </small>
+        </div>
+      </div>
+
+      <!-- Status Messages -->
+      <div *ngIf="successMessage" class="success-message">
+        <i class="pi pi-check-circle"></i> {{ successMessage }}
+      </div>
+
+      <div *ngIf="errorMessage" class="error-message">
+        <i class="pi pi-exclamation-circle"></i> {{ errorMessage }}
+      </div>
+
+      <!-- Submit Button -->
+      <div class="button-container">
+        <button pButton type="button" icon="pi pi-times" label="Cancel" class="p-button-outlined p-button-secondary" (click)="hide()"></button>
+        <button pButton type="submit" icon="pi pi-check" label="Submit" [loading]="submitting" [disabled]="!salesForm.valid || submitting"></button>
+      </div>
+    </form>
+  </div>
+</p-dialog>

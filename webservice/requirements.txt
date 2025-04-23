@@ -1,0 +1,11 @@
+bcrypt==4.1.2
+numpy==1.26.4
+pandas==2.2.1
+plaid-python==11.4.0
+pycountry-convert==0.7.2
+requests==2.31.0
+scikit-learn==1.4.1.post1
+sqlite3==0.0.1
+torch==2.2.2
+torch-geometric==2.5.0
+tqdm==4.66.2

@@ -9,6 +9,7 @@ from datetime import timedelta
 from Analysis.Predict import predict_best_platform
 from Analysis.ProductMedia import recommend_platforms
 from Analysis.DataAnalytics import analyze_transactions
+from DataSourcing.JobQueue import submit_sales_job
 from DataSourcing.SQLliteCreate import createDB, authenticate_user, register_user, get_user_security_status
 from DataSourcing.SQLRead import fetch_all_product_names, fetch_sales_by_product, fetch_sales_by_category
 
@@ -220,6 +221,34 @@ def sales_by_category():
     except Exception as e:
         app.logger.error(f"Error fetching sales data: {str(e)}")
         return jsonify({"error": "Error fetching sales data"}), 500
+
+@app.route('/submit_sales', methods=['POST'])
+@jwt_required()
+def submit_sales_job_endpoint():
+    """
+    Submit a sales job to the queue.
+    """
+    claims = get_jwt()
+    if claims.get("role") != "company":
+        return jsonify({"msg": "Company role required"}), 403
+
+    data = request.get_json()
+    country = data.get('region')
+    category = data.get('product_category')
+    product_name = data.get('product_name')
+    sales = data.get('total_revenue')
+    quantity = data.get('units_sold')
+
+    if not all([country, category, product_name, sales, quantity]):
+        print(country, category, product_name, sales, quantity)
+        return jsonify({"error": "All fields are required"}), 400
+
+    try:
+        job_id = submit_sales_job(country, category, product_name, sales, quantity)
+        return jsonify({"job_id": job_id}), 200
+    except Exception as e:
+        app.logger.error(f"Error submitting sales job: {str(e)}")
+        return jsonify({"error": "Error submitting sales job"}), 500
 
 # ------------------ APP INIT ------------------
 

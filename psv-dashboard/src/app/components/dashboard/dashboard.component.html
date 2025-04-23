@@ -1,11 +1,13 @@
 <div class="dashboard-container">
   <p-tabView>
-    <!-- Overview Tab -->
-    <p-tabPanel header="Overview">
-      <ng-template pTemplate="header">
-        <i class="pi pi-home"></i>
-        <span>Overview</span>
-      </ng-template>
+    <!-- Financial Overview Tab -->
+      <p-tabPanel header="Financial Overview">
+        <ng-template pTemplate="header">
+          <div class="tab-header">
+            <i class="pi pi-home tab-icon" aria-hidden="true"></i>
+            <span class="tab-title">Financial Overview</span>
+          </div>
+        </ng-template>
 
       <!-- Charts Row -->
       <div class="dashboard-row">
@@ -81,12 +83,15 @@
       </div>
     </p-tabPanel>
 
-    <!-- Detailed Analysis Tab -->
-    <p-tabPanel header="Detailed Analysis">
-      <ng-template pTemplate="header">
-        <i class="pi pi-chart-bar"></i>
-        <span>Detailed Analysis</span>
-      </ng-template>
+    <!-- Product Analysis Tab -->
+      <p-tabPanel header="Product Analysis">
+        <ng-template pTemplate="header">
+          <div class="tab-header">
+            <i class="pi pi-chart-bar tab-icon" aria-hidden="true"></i>
+            <span class="tab-title">Product Analysis</span>
+          </div>
+        </ng-template>
+
       <div class="dashboard-row">
         <p-card class="dashboard-card full-width">
           <ng-template pTemplate="header">
@@ -94,7 +99,22 @@
               <span class="p-card-title">Product Analysis</span>
             </div>
           </ng-template>
+
           <div class="content-wrapper">
+            <div class="mb-3" style="text-align: right;">
+              <button
+                pButton
+                pRipple
+                type="button"
+                icon="pi pi-plus"
+                label="Add Sales Data"
+                class="p-button-success"
+                (click)="openSalesDialog(); $event.stopPropagation()">
+              </button>
+            </div>
+
+
+
             <!-- Product Selection Dropdown -->
             <div class="col-12 md:col-8 lg:col-9">
               <div class="card">
@@ -192,12 +212,15 @@
       </div>
     </p-tabPanel>
 
-    <!-- Forecasting Tab -->
-    <p-tabPanel header="Forecasting">
+    <!-- Social Media Prediction Tab -->
+    <p-tabPanel header="Social Media Prediction">
       <ng-template pTemplate="header">
-        <i class="pi pi-chart-line"></i>
-        <span>Forecasting</span>
+        <div class="tab-header">
+          <i class="pi pi-chart-line tab-icon" aria-hidden="true"></i>
+          <span class="tab-title">Social Media Prediction</span>
+        </div>
       </ng-template>
+
       <div class="dashboard-row">
         <p-card class="dashboard-card full-width">
           <ng-template pTemplate="header">
@@ -233,9 +256,6 @@
                 placeholder="Select a country"
                 (onChange)="onCountryChange($event)">
               </p-dropdown>
-
-
-
             </div>
 
             <!-- Platform Recommendation Data -->
@@ -251,7 +271,7 @@
               <div class="chart-section">
                 <h4>Platform Distribution for {{selectedCountry}}</h4>
                 <div class="chart-wrapper">
-                  <div class="chart-inner">
+                  <div class="chart-inner2">
                     <canvas baseChart
                       [data]="getPlatformChartData()"
                       [options]="pieChartOptions"
@@ -260,6 +280,7 @@
                   </div>
                 </div>
               </div>
+
 
               <!-- Platform Data Table -->
               <div class="platform-table">
@@ -292,4 +313,11 @@
       </div>
     </p-tabPanel>
   </p-tabView>
+              <!-- Sales Dialog Popup -->
+              <app-sales-dialog
+              #salesDialog
+              [visible]="showSalesDialog"
+              (close)="showSalesDialog = false"
+              (submitSuccess)="onSalesDialogSubmit($event)">
+            </app-sales-dialog>
 </div>

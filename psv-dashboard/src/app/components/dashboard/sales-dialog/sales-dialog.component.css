@@ -1,0 +1,460 @@
+/* Ensure dialog appears on top of everything */
+:host ::ng-deep .p-dialog-mask {
+  z-index: 99999 !important;
+  background-color: rgba(0, 0, 0, 0.4) !important; /* Darker semi-transparent background */
+}
+
+:host ::ng-deep .p-dialog {
+  z-index: 99999 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+  border-radius: 12px !important;
+  background-color: #ffffff !important; /* Ensure opaque background */
+  border: none !important;
+  max-width: 95vw !important;
+  width: 650px !important;
+}
+
+:host ::ng-deep .p-dialog-header {
+  background: linear-gradient(135deg, #43a047, #4caf50) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding: 1.25rem 1.5rem !important;
+  color: white !important;
+}
+
+:host ::ng-deep .p-dialog-title {
+  font-weight: 600 !important;
+  font-size: 1.2rem !important;
+  color: white !important;
+  letter-spacing: 0.5px !important;
+}
+
+:host ::ng-deep .p-dialog-header-icons {
+  color: white !important;
+}
+
+:host ::ng-deep .p-dialog-header-icon {
+  color: white !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 50% !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  transition: background-color 0.2s !important;
+}
+
+:host ::ng-deep .p-dialog-header-icon:hover {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  color: white !important;
+}
+
+:host ::ng-deep .p-dialog-content {
+  overflow: visible !important; /* Allow overlays to escape */
+  max-height: 90vh !important; /* Keep max height if needed */
+}
+
+.sales-form-container {
+  padding: 1.5rem !important;
+  background-color: white !important; /* Ensure content has solid background */
+}
+
+.sales-form-container,
+.form-grid,
+.field {
+  overflow: visible !important;
+}
+
+
+.form-description {
+  color: #6c757d;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.6;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.form-description::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(to right, #43a047, #66bb6a);
+  border-radius: 3px;
+}
+
+.sales-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background-color: white !important; /* Ensure form has solid background */
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  background-color: white !important; /* Ensure grid has solid background */
+}
+
+.field {
+  margin-bottom: 1.5rem;
+  background-color: white !important; /* Ensure fields have solid background */
+  position: relative;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #495057;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Input group styling */
+:host ::ng-deep .p-inputgroup {
+  display: flex;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 6px !important;
+  overflow: visible !important;
+}
+
+/* Common input styling */
+:host ::ng-deep .p-inputtext,
+:host ::ng-deep .p-dropdown,
+:host ::ng-deep .p-calendar .p-inputtext,
+:host ::ng-deep .p-inputnumber .p-inputtext {
+  width: 100% !important;
+  padding: 0.75rem 1rem !important;
+  font-size: 1rem !important;
+  border: 1px solid #e0e0e0 !important;
+  background-color: #ffffff !important;
+  border-radius: 6px !important;
+  transition: all 0.3s ease !important;
+  color: #495057 !important;
+  height: auto !important;
+  min-height: 43px !important;
+}
+
+:host ::ng-deep .p-inputtext:hover,
+:host ::ng-deep .p-dropdown:hover,
+:host ::ng-deep .p-calendar:hover .p-inputtext,
+:host ::ng-deep .p-inputnumber:hover .p-inputtext {
+  border-color: #bdbdbd !important;
+}
+
+:host ::ng-deep .p-inputgroup-addon {
+  background-color: #f5f7fa !important;
+  color: #43a047 !important;
+  border-color: #e0e0e0 !important;
+  padding: 0.75rem !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:host ::ng-deep .p-inputgroup-addon i {
+  font-size: 1rem !important;
+}
+
+/* Dropdown specific styling */
+:host ::ng-deep .p-dropdown {
+  width: 100%;
+  border-radius: 6px !important;
+  background-color: #ffffff !important; /* Ensure dropdown has solid background */
+  display: flex !important;
+  align-items: center !important;
+}
+
+:host ::ng-deep .p-dropdown .p-dropdown-label {
+  padding: 0.75rem 1rem !important;
+  font-size: 1rem !important;
+  background-color: transparent !important;
+  border: none !important;
+  margin: 0 !important;
+  height: auto !important;
+  color: #495057 !important;
+}
+
+:host ::ng-deep .p-dropdown .p-dropdown-label.p-placeholder {
+  color: #919191 !important;
+}
+
+:host ::ng-deep .p-dropdown-trigger {
+  width: 3rem !important;
+  background-color: transparent !important;
+  color: #919191 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+:host ::ng-deep .p-dropdown-trigger-icon {
+  font-size: 0.875rem !important;
+}
+
+/* Fix dropdown panel display */
+:host ::ng-deep .p-dropdown-panel {
+  z-index: 100001 !important; /* Higher than dialog */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+  background-color: #ffffff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  overflow: visible !important;
+  min-width: 100% !important;
+  position: absolute !important;
+  visibility: visible !important;
+  display: block !important;
+}
+
+:host ::ng-deep .p-dropdown-items-wrapper {
+  max-height: 200px !important;
+}
+
+:host ::ng-deep .p-dropdown-items {
+  padding: 0.5rem 0 !important;
+}
+
+:host ::ng-deep .p-dropdown-item {
+  padding: 0.75rem 1rem !important;
+  color: #495057 !important;
+  font-size: 0.95rem !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Calendar styling */
+:host ::ng-deep .p-calendar {
+  width: 100%;
+  background-color: #ffffff !important; /* Ensure calendar has solid background */
+}
+
+:host ::ng-deep .p-calendar .p-inputtext {
+  border-radius: 6px !important;
+}
+
+:host ::ng-deep .p-calendar .p-button {
+  background-color: transparent !important;
+  border: none !important;
+  color: #919191 !important;
+}
+
+/* Fix calendar panel display */
+:host ::ng-deep .p-datepicker {
+  z-index: 100001 !important; /* Higher than dialog */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+  background-color: #ffffff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 0.5rem !important;
+  margin-top: 5px !important;
+}
+
+:host ::ng-deep .p-dropdown-panel,
+:host ::ng-deep .p-dropdown-items-wrapper,
+:host ::ng-deep .p-dropdown-items {
+  background-color: #ffffff !important;
+}
+
+:host ::ng-deep .p-datepicker,
+:host ::ng-deep .p-datepicker-calendar,
+:host ::ng-deep .p-datepicker-header,
+:host ::ng-deep .p-datepicker-month,
+:host ::ng-deep .p-datepicker-year {
+  background-color: #ffffff !important;
+}
+
+:host ::ng-deep .p-datepicker-header {
+  border-bottom: 1px solid #f0f0f0 !important;
+  padding: 0.5rem !important;
+  background-color: #fafafa !important;
+  color: #495057 !important;
+}
+
+:host ::ng-deep .p-datepicker-calendar {
+  margin: 0.5rem 0 !important;
+}
+
+:host ::ng-deep .p-datepicker-calendar th {
+  padding: 0.5rem !important;
+  color: #495057 !important;
+  font-weight: 600 !important;
+}
+
+:host ::ng-deep .p-datepicker-calendar td {
+  padding: 0.15rem !important;
+}
+
+:host ::ng-deep .p-datepicker-calendar td > span {
+  width: 2rem !important;
+  height: 2rem !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+}
+
+:host ::ng-deep .p-datepicker-calendar td > span.p-highlight {
+  background-color: #43a047 !important;
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .p-datepicker-calendar td > span:hover {
+  background-color: rgba(67, 160, 71, 0.1) !important;
+}
+
+/* Number input styling */
+:host ::ng-deep .p-inputnumber {
+  width: 100%;
+  background-color: #ffffff !important; /* Ensure number input has solid background */
+  display: flex !important;
+  border-radius: 6px !important;
+  overflow: visible !important;
+}
+
+:host ::ng-deep .p-inputnumber-input {
+  flex: 1 !important;
+  text-align: center !important;
+}
+
+:host ::ng-deep .p-inputnumber-button {
+  background-color: #f5f7fa !important;
+  color: #43a047 !important;
+  border: 1px solid #e0e0e0 !important;
+  width: 2.5rem !important;
+  transition: all 0.3s ease !important;
+}
+
+:host ::ng-deep .p-inputnumber-button:hover {
+  background-color: #e8f5e9 !important;
+}
+
+:host ::ng-deep .p-inputnumber-button-up {
+  border-left: 1px solid #e0e0e0 !important;
+  border-top-right-radius: 6px !important;
+  border-bottom-right-radius: 6px !important;
+}
+
+:host ::ng-deep .p-inputnumber-button-down {
+  border-right: 1px solid #e0e0e0 !important;
+  border-top-left-radius: 6px !important;
+  border-bottom-left-radius: 6px !important;
+}
+
+:host ::ng-deep .p-inputnumber-button-icon {
+  font-size: 0.75rem !important;
+}
+
+/* Fix dropdown overlay rendering */
+:host ::ng-deep .p-dropdown-clear-icon {
+  right: 3rem !important;
+  color: #919191 !important;
+  cursor: pointer !important;
+}
+
+/* Ensure proper focus styles */
+:host ::ng-deep .p-inputtext:enabled:focus,
+:host ::ng-deep .p-dropdown:focus,
+:host ::ng-deep .p-calendar:focus {
+  box-shadow: 0 0 0 2px rgba(67, 160, 71, 0.2) !important;
+  border-color: #43a047 !important;
+}
+
+/* Fix dropdown items highlight */
+:host ::ng-deep .p-dropdown-item.p-highlight {
+  background-color: rgba(67, 160, 71, 0.1) !important;
+  color: #43a047 !important;
+  font-weight: 500 !important;
+}
+
+:host ::ng-deep .p-dropdown-item:hover {
+  background-color: rgba(67, 160, 71, 0.05) !important;
+}
+
+/* Validation message styling */
+.p-error {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  display: block;
+  font-weight: 500;
+  position: absolute;
+  bottom: -1.5rem;
+  left: 0;
+}
+
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 10px rgba(21, 87, 36, 0.1);
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 10px rgba(114, 28, 36, 0.1);
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+:host ::ng-deep .button-container .p-button-secondary {
+  background-color: #f8f9fa !important;
+  color: #6c757d !important;
+  border-color: #e9ecef !important;
+}
+
+:host ::ng-deep .button-container .p-button {
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 6px !important;
+}
+
+:host ::ng-deep .button-container .p-button:not(.p-button-secondary) {
+  background: linear-gradient(135deg, #43a047, #4caf50) !important;
+  border-color: #43a047 !important;
+}
+
+/* Ensure overlay has proper display */
+:host ::ng-deep .p-component-overlay {
+  background-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .sales-form-container {
+    padding: 1rem !important;
+  }
+
+  .button-container {
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+  }
+
+  :host ::ng-deep .button-container .p-button {
+    width: 100%;
+  }
+}

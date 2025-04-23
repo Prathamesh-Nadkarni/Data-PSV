@@ -35,7 +35,7 @@ export class RegisterComponent {
           this.registerMessage = 'Registration successful!';
           this.errorMessage = '';
           this.registerForm.reset({ role: 'user' });
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/login']);
         },
         error: (error: HttpErrorResponse) => {
           if (error.status === 409) {

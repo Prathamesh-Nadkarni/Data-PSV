@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgChartsModule } from 'ng2-charts';
@@ -18,6 +18,11 @@ import { NgSwitch } from '@angular/common';
 import { finalize } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { ProductDropdownComponent } from '../product-dropdown/product-dropdown.component';
+import { SalesDialogComponent } from './sales-dialog/sales-dialog.component';
+import { ButtonModule } from 'primeng/button';
+import { RippleModule } from 'primeng/ripple';
+import { DialogModule } from 'primeng/dialog';
+
 
 @Pipe({ name: 'chartData', standalone: true })
 export class ChartDataPipe implements PipeTransform {
@@ -52,7 +57,11 @@ interface ChartStates {
     AutoCompleteModule,
     ProgressSpinnerModule,
     NgSwitch,
-    ProductDropdownComponent
+    ProductDropdownComponent,
+    SalesDialogComponent,
+    ButtonModule,
+    RippleModule,
+    DialogModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
@@ -66,6 +75,8 @@ interface ChartStates {
 })
 
 export class DashboardComponent implements OnInit {
+  @ViewChild('salesDialog') salesDialog!: SalesDialogComponent;
+
   // Financial chart options
   public barChartOptions: ChartConfiguration<'bar'>['options'] = {
     responsive: true,
@@ -102,6 +113,7 @@ export class DashboardComponent implements OnInit {
   accountData: any[] = [];
   selectedProduct: Product | null = null;
   selectedProductSales: ProductSales | null = null;
+
   // Product data
   products: Product[] = [];
   filteredProducts: Product[] = [];
@@ -112,6 +124,7 @@ export class DashboardComponent implements OnInit {
   totalQuantity: number = 0;
   loading = false;
   availableCountryOptions: { label: string, value: string }[] = [];
+  showSalesDialog = false;
 
   // Forecasting data
   selectedForecastProduct: Product | null = null;
@@ -167,9 +180,36 @@ export class DashboardComponent implements OnInit {
     this.loadProducts();
   }
 
+  // Open sales dialog method
+  openSalesDialog() {
+    console.log('Opening sales dialog...');
+    this.showSalesDialog = true;
+    
+    // Use requestAnimationFrame to ensure the dialog is properly rendered
+    requestAnimationFrame(() => {
+      if (this.salesDialog) {
+        console.log('Calling show() on dialog component');
+        this.salesDialog.show();
+      } else {
+        console.error('Sales dialog component not found');
+      }
+    });
+  }
+
+  onSalesDialogSubmit(event: any) {
+    console.log('Sales dialog submit success:', event);
+    this.showSalesDialog = false;
+    if (this.selectedProduct?.product_name) {
+      this.fetchProductSalesData(this.selectedProduct.product_name);
+    }
+  }
+
+  onSalesDialogCancel() {
+    this.showSalesDialog = false;
+  }
+
   loadFinancialData() {
     this.financialService.getData().subscribe((response: any) => {
-      // Reset analysis containers
       this.spendingByCategory = {};
       this.monthlyTrends = {};
       this.accountAnalysis = {};
