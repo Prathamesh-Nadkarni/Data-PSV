@@ -89,251 +89,203 @@
       </div>
     </p-tabPanel>
 
-    <!-- Product Analysis Tab -->
-    <p-tabPanel header="Product Analysis" (click)="$event.preventDefault()">
-        <ng-template pTemplate="header">
-          <div class="tab-header">
-            <i class="pi pi-chart-bar tab-icon" aria-hidden="true"></i>
-            <span class="tab-title">Product Analysis</span>
-          </div>
-        </ng-template>
-
-      <div class="dashboard-row">
-        <p-card class="dashboard-card full-width">
-          <ng-template pTemplate="header">
-            <div class="p-card-header">
-              <span class="p-card-title">Product Analysis</span>
-            </div>
-          </ng-template>
-
-          <div class="content-wrapper">
-            <div class="mb-3" style="text-align: right;">
-              <button
-                pButton
-                pRipple
-                type="button"
-                icon="pi pi-plus"
-                label="Add Sales Data"
-                class="p-button-success"
-                (click)="openSalesDialog(); $event.stopPropagation()">
-              </button>
-            </div>
-
-
-
-            <!-- Product Selection Dropdown -->
-            <div class="col-12 md:col-8 lg:col-9">
-              <div class="card">
-                <h5>Product Search</h5>
-                <div class="formgroup-inline mb-3">
-                  <div class="search-box-container w-full" tabindex="-1">
-                    <!-- Debug Info -->
-                    <div *ngIf="products" class="mb-2">
-                      <small class="text-muted">Available Products: {{products.length}}</small>
-                    </div>
-
-                    <!-- Product Dropdown -->
-                    <app-product-dropdown (productSelected)="onProductSelected($event)"></app-product-dropdown>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Product Sales Data Section -->
-            <div class="sales-data" *ngIf="productSales && productSales.length > 0">
-              <h3>Sales Analysis</h3>
-
-              <div class="summary-cards">
-                <div class="summary-card">
-                  <div class="card-label">Total Sales</div>
-                  <div class="card-value">{{totalSales | currency}}</div>
-                </div>
-                <div class="summary-card">
-                  <div class="card-label">Total Units Sold</div>
-                  <div class="card-value">{{totalQuantity | number}}</div>
-                </div>
-              </div>
-
-              <!-- Sales by Country -->
-              <div class="chart-section">
-                <h4>Sales by Country</h4>
-                <div class="chart-wrapper">
-                  <div class="chart-inner">
-                    <canvas baseChart [data]="salesByCountry | chartData" [options]="barChartOptions" type="bar"></canvas>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Sales by Category -->
-              <div class="chart-section">
-                <h4>Sales by Category</h4>
-                <div class="chart-wrapper">
-                  <div class="chart-inner">
-                    <canvas baseChart [data]="salesByCategory | chartData" [options]="barChartOptions" type="bar"></canvas>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Sales Data Table -->
-              <div class="sales-table">
-                <h4>Detailed Sales Data</h4>
-                <p-table [value]="productSales"
-                         [paginator]="true"
-                         [rows]="10"
-                         [rowsPerPageOptions]="[5,10,25]"
-                         [globalFilterFields]="['country','category']"
-                         responsiveLayout="scroll">
-                  <ng-template pTemplate="header">
-                    <tr>
-                      <th>Country</th>
-                      <th>Category</th>
-                      <th>Sales</th>
-                      <th>Quantity</th>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="body" let-sale>
-                    <tr>
-                      <td>{{sale.country}}</td>
-                      <td>{{sale.category}}</td>
-                      <td>{{sale.sales | currency}}</td>
-                      <td>{{sale.quantity | number}}</td>
-                    </tr>
-                  </ng-template>
-                </p-table>
-              </div>
-            </div>
-
-            <!-- No Product Selected Message -->
-            <div class="no-selection" *ngIf="!productSales || productSales.length === 0 && !loading">
-              <p>Select a product from the dropdown to view detailed analysis</p>
-            </div>
-
-            <!-- Loading Indicator -->
-            <div class="loading-indicator" *ngIf="loading">
-              <p-progressSpinner></p-progressSpinner>
-              <p>Loading product data...</p>
-            </div>
-          </div>
-        </p-card>
-      </div>
-    </p-tabPanel>
-
-    <!-- Social Media Prediction Tab -->
-    <p-tabPanel header="Social Media Prediction">
+<!-- Product Analysis Tab -->
+<p-tabPanel header="Product Analysis">
+  <ng-template pTemplate="header">
+    <div class="tab-header">
+      <i class="pi pi-chart-bar tab-icon"></i>
+      <span class="tab-title">Product Analysis</span>
+    </div>
+  </ng-template>
+  <div class="dashboard-row">
+    <p-card class="dashboard-card full-width">
       <ng-template pTemplate="header">
-        <div class="tab-header">
-          <i class="pi pi-chart-line tab-icon" aria-hidden="true"></i>
-          <span class="tab-title">Social Media Prediction</span>
+        <div class="p-card-header">
+          <span class="p-card-title">Product Analysis</span>
         </div>
       </ng-template>
 
-      <div class="dashboard-row">
-        <p-card class="dashboard-card full-width">
-          <ng-template pTemplate="header">
-            <div class="p-card-header">
-              <span class="p-card-title">Platform Recommendation</span>
-            </div>
-          </ng-template>
-          <div class="content-wrapper">
-            <!-- Product Selection -->
-            <div class="col-12 md:col-8 lg:col-9">
-              <div class="card">
-                <h5>Select Product for Forecasting</h5>
-                <div class="formgroup-inline mb-3">
-                  <div class="search-box-container w-full">
-                    <!-- Product Dropdown -->
-                    <app-product-dropdown (productSelected)="onForecastProductSelected($event)"></app-product-dropdown>
-                  </div>
+      <div class="content-wrapper">
+        <div class="mb-3" style="text-align: right;">
+          <button pButton pRipple type="button" icon="pi pi-plus" label="Add Sales Data" class="p-button-success"
+                  (click)="openSalesDialog(); $event.stopPropagation()">
+          </button>
+        </div>
+
+        <div class="col-12 md:col-8 lg:col-9">
+          <div class="card">
+            <h5>Product Search</h5>
+            <div class="formgroup-inline mb-3">
+              <div class="search-box-container w-full" tabindex="-1">
+                <div *ngIf="products" class="mb-2">
+                  <small class="text-muted">Available Products: {{products.length}}</small>
                 </div>
-                <div *ngIf="!selectedForecastProduct && !loadingForecast" class="p-3 text-center search-hint">
-                  <i class="pi pi-search text-xl mb-2"></i>
-                  <div>Search for a product to view platform recommendations</div>
-                </div>
+                <app-product-dropdown (productSelected)="onProductSelected($event)"></app-product-dropdown>
               </div>
-            </div>
-
-            <!-- Country Selection (visible when product is selected) -->
-            <div *ngIf="availableCountries.length > 0" class="country-selection mt-4">
-              <h5>Select Country</h5>
-              <p-dropdown
-                *ngIf="selectedForecastProduct && availableCountryOptions.length"
-                [options]="availableCountryOptions"
-                [(ngModel)]="selectedCountry"
-                placeholder="Select a country"
-                (onChange)="onCountryChange($event)">
-              </p-dropdown>
-            </div>
-
-            <h2>Social Media Analytics</h2>
-              <pre>{{ socialAnalytics | json }}</pre>
-
-              <h2>Transaction Analytics</h2>
-              <pre>{{ transactionAnalytics | json }}</pre>
-
-              <h2>User Data Analytics</h2>
-              <pre>{{ userDataAnalytics | json }}</pre>
-
-
-            <!-- Platform Recommendation Data -->
-            <div class="platform-data" *ngIf="platformDataForChart && platformDataForChart.length > 0">
-              <h3>Best Platform Recommendations for <span class="highlight-country">{{selectedCountry}}</span></h3>
-
-              <!-- Add a note about country selection -->
-              <div class="country-note">
-                <p><i class="pi pi-info-circle"></i> You can change the country using the dropdown above to see recommendations for different markets.</p>
-              </div>
-
-              <!-- Platform Chart -->
-              <div class="chart-section">
-                <h4>Platform Distribution for {{selectedCountry}}</h4>
-                <div class="chart-wrapper">
-                  <div class="chart-inner2">
-                    <canvas baseChart
-                      [data]="getPlatformChartData()"
-                      [options]="pieChartOptions"
-                      [type]="'pie'">
-                    </canvas>
-                  </div>
-                </div>
-              </div>
-
-
-              <!-- Platform Data Table -->
-              <div class="platform-table">
-                <h4>Detailed Platform Data</h4>
-                <p-table [value]="platformDataForChart"
-                         responsiveLayout="scroll">
-                  <ng-template pTemplate="header">
-                    <tr>
-                      <th>Platform</th>
-                      <th>Market Share</th>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="body" let-platform>
-                    <tr>
-                      <td>{{platform.platform}}</td>
-                      <td>{{platform.percentage | number:'1.1-2'}}%</td>
-                    </tr>
-                  </ng-template>
-                </p-table>
-              </div>
-            </div>
-
-            <!-- Loading Indicator -->
-            <div class="loading-indicator" *ngIf="loadingForecast">
-              <p-progressSpinner></p-progressSpinner>
-              <p>Analyzing platform data...</p>
             </div>
           </div>
-        </p-card>
+        </div>
+
+        <div class="sales-data" *ngIf="productSales && productSales.length > 0">
+          <h3>Sales Analysis</h3>
+
+          <div class="summary-cards">
+            <div class="summary-card">
+              <div class="card-label">Total Sales</div>
+              <div class="card-value">{{totalSales | currency}}</div>
+            </div>
+            <div class="summary-card">
+              <div class="card-label">Total Units Sold</div>
+              <div class="card-value">{{totalQuantity | number}}</div>
+            </div>
+          </div>
+
+          <!-- Chart Pair Section -->
+          <div class="chart-pair">
+            <!-- Sales by Country Chart -->
+            <div class="chart-section">
+              <h4>Sales by Country</h4>
+              <div class="chart-wrapper">
+                <div class="chart-inner">
+                  <canvas baseChart [data]="salesByCountry | chartData" [options]="barChartOptions" type="bar"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sales by Category Chart -->
+            <div class="chart-section">
+              <h4>Sales by Category</h4>
+              <div class="chart-wrapper">
+                <div class="chart-inner">
+                  <canvas baseChart [data]="salesByCategory | chartData" [options]="barChartOptions" type="bar"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sales-table">
+            <h4>Detailed Sales Data</h4>
+            <p-table [value]="productSales" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,25]"
+                     [globalFilterFields]="['country','category']" responsiveLayout="scroll">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Country</th>
+                  <th>Category</th>
+                  <th>Sales</th>
+                  <th>Quantity</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-sale>
+                <tr>
+                  <td>{{sale.country}}</td>
+                  <td>{{sale.category}}</td>
+                  <td>{{sale.sales | currency}}</td>
+                  <td>{{sale.quantity | number}}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+
+        <div class="no-selection" *ngIf="!productSales || productSales.length === 0 && !loading">
+          <p>Select a product from the dropdown to view detailed analysis</p>
+        </div>
+
+        <div class="loading-indicator" *ngIf="loading">
+          <p-progressSpinner></p-progressSpinner>
+          <p>Loading product data...</p>
+        </div>
       </div>
-    </p-tabPanel>
-  </p-tabView>
-              <!-- Sales Dialog Popup -->
-              <app-sales-dialog
-              #salesDialog
-              [visible]="showSalesDialog"
-              (close)="showSalesDialog = false"
-              (submitSuccess)="onSalesDialogSubmit($event)">
-            </app-sales-dialog>
+    </p-card>
+  </div>
+</p-tabPanel>
+
+
+
+ <!-- Social Media Prediction Tab -->
+ <p-tabPanel header="Social Media Prediction">
+  <ng-template pTemplate="header">
+    <div class="tab-header">
+      <i class="pi pi-chart-line tab-icon"></i>
+      <span class="tab-title">Social Media Prediction</span>
+    </div>
+  </ng-template>
+  <div class="dashboard-row">
+    <p-card class="dashboard-card full-width">
+      <ng-template pTemplate="header">
+        <div class="p-card-header">
+          <span class="p-card-title">Platform Recommendation</span>
+        </div>
+      </ng-template>
+      <div class="content-wrapper">
+        <div class="card">
+          <h5>Select Product for Forecasting</h5>
+          <div class="formgroup-inline mb-3">
+            <div class="search-box-container w-full">
+              <app-product-dropdown (productSelected)="onForecastProductSelected($event)"></app-product-dropdown>
+            </div>
+          </div>
+          <div *ngIf="!selectedForecastProduct && !loadingForecast" class="p-3 text-center search-hint">
+            <i class="pi pi-search text-xl mb-2"></i>
+            <div>Search for a product to view platform recommendations</div>
+          </div>
+        </div>
+
+        <div *ngIf="availableCountries.length > 0" class="country-selection mt-4">
+          <h5>Select Country</h5>
+          <p-dropdown *ngIf="selectedForecastProduct && availableCountryOptions.length"
+                      [options]="availableCountryOptions"
+                      [(ngModel)]="selectedCountry"
+                      placeholder="Select a country"
+                      (onChange)="onCountryChange($event)">
+          </p-dropdown>
+        </div>
+
+        <div class="platform-data" *ngIf="platformDataForChart && platformDataForChart.length > 0">
+          <h3>Top Platform for <span class="highlight-country">{{selectedCountry}}</span></h3>
+          <div class="country-note">
+            <p><i class="pi pi-info-circle"></i> Change the country above to compare markets.</p>
+          </div>
+          <div class="chart-section">
+            <h4>Platform Distribution</h4>
+            <div class="chart-wrapper">
+              <div class="chart-inner2">
+                <canvas baseChart [data]="getPlatformChartData()" [options]="pieChartOptions" type="pie"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="platform-table">
+            <h4>Detailed Platform Data</h4>
+            <p-table [value]="platformDataForChart" responsiveLayout="scroll">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Platform</th>
+                  <th>Market Share</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-platform>
+                <tr>
+                  <td><span class="tag tag-rounded tag-info">{{platform.platform}}</span></td>
+                  <td><span class="tag tag-rounded tag-success">{{platform.percentage | number:'1.1-2'}}%</span></td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+
+        <div class="loading-indicator" *ngIf="loadingForecast">
+          <p-progressSpinner></p-progressSpinner>
+          <p>Analyzing platform data...</p>
+        </div>
+
+      </div>
+    </p-card>
+  </div>
+</p-tabPanel>
+</p-tabView>
+
+<app-sales-dialog #salesDialog [visible]="showSalesDialog" (close)="showSalesDialog = false"
+                (submitSuccess)="onSalesDialogSubmit($event)">
+</app-sales-dialog>
 </div>
+

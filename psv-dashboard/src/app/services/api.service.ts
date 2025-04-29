@@ -68,4 +68,54 @@ export class ApiService {
       }
     ).pipe(catchError(this.handleError.bind(this)));
   }
+  getSocialAnalytics(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/analytics/social`, {
+      headers: this.getHeaders(),
+      withCredentials: true
+    }).pipe(catchError(this.handleError.bind(this)));
+  }
+
+  getTransactionAnalytics(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/analytics/transactions`, {
+      headers: this.getHeaders(),
+      withCredentials: true
+    }).pipe(catchError(this.handleError.bind(this)));
+  }
+
+  getUserDataAnalytics(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/analytics/userdata`, {
+      headers: this.getHeaders(),
+      withCredentials: true
+    }).pipe(catchError(this.handleError.bind(this)));
+  }
+
+  predictQuantity(input: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/predict`, input, {
+      headers: this.getHeaders(),
+      withCredentials: true
+    }).pipe(catchError(this.handleError.bind(this)));
+  }
+
+  getCategories(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.baseUrl}/categories`, {
+      headers: this.getHeaders(),
+      withCredentials: true
+    }).pipe(catchError(this.handleError.bind(this)));
+  }
+  
+  getProductsByCategory(category: string): Observable<string[]> {
+    return this.http.get<string[]>(`${this.baseUrl}/products`, {
+      headers: this.getHeaders(),
+      withCredentials: true,
+      params: { category }
+    }).pipe(catchError(this.handleError.bind(this)));
+  }
+  
+
+  healthCheck(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/health`, {
+      headers: this.getHeaders(),
+      withCredentials: true
+    }).pipe(catchError(this.handleError.bind(this)));
+  }
 }

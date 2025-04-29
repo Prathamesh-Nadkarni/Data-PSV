@@ -517,6 +517,69 @@ app-sales-dialog > * {
   z-index: 1;
 }
 
+.chart-pair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 2rem;
+  justify-content: center;
+}
+
+.chart-pair .chart-section {
+  flex: 1 1 45%;
+  min-width: 300px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.chart-pair .chart-section:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.chart-pair .chart-wrapper {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 280px;
+}
+
+.chart-pair .chart-inner {
+  width: 100%;
+  height: 100%;
+  background: #f8faff;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.chart-pair h4 {
+  font-size: 1.1rem;
+  color: #495057;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Responsive for mobile */
+@media (max-width: 768px) {
+  .chart-pair {
+    flex-direction: column;
+  }
+
+  .chart-pair .chart-section {
+    flex: 1 1 100%;
+  }
+
+  .chart-pair .chart-wrapper {
+    height: 240px;
+  }
+}
+
 .chart-inner {
   width: 100%;
   max-width: 100%;

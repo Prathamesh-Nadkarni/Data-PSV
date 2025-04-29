@@ -5,12 +5,14 @@ import { provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@a
 import { routes } from './app.routes';
 import { JwtInterceptor } from './services/jwt.interceptor';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
+    provideAnimations(),
     provideHttpClient(
-      withInterceptorsFromDi() // Enable DI-based interceptors
+      withInterceptorsFromDi()
     ),
     provideRouter(routes),
     {
