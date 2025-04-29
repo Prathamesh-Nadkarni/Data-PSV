@@ -95,7 +95,13 @@ We welcome contributions! To contribute:
 5. Open a pull request.
 
 ---
+## Screenshots for reference
+![Screenshot 2025-04-29 023435](https://github.com/user-attachments/assets/5071bded-2cac-4ab6-ab5c-f08840fa6a9d)
+![Screenshot 2025-04-29 024857](https://github.com/user-attachments/assets/e99bdaba-4fd9-4775-88e0-10152ae38e9b)
+![Screenshot 2025-04-29 024915](https://github.com/user-attachments/assets/52833440-9080-4727-9ddb-44557b1cabe6)
+![image](https://github.com/user-attachments/assets/e6da9d73-08e9-434b-9cdc-d4d6fa932ff2)
 
+---
 ## 📄 License
 
 This project is licensed under the **MIT License**.
@@ -105,4 +111,3 @@ This project is licensed under the **MIT License**.
 ## 📬 Contact
 
 **Email**: [pyn2@illinois.edu](mailto:pyn2@illinois.edu)
-
