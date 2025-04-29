@@ -1,0 +1,137 @@
+{
+    "demographics": {
+        "age_stats": {
+            "count": 1000.0,
+            "mean": 40.986,
+            "std": 13.497851532595696,
+            "min": 18.0,
+            "25%": 29.0,
+            "50%": 42.0,
+            "75%": 52.0,
+            "max": 64.0
+        },
+        "gender_distribution": {
+            "Male": 514,
+            "Female": 322,
+            "Other": 164
+        },
+        "income_stats": {
+            "count": 1000.0,
+            "mean": 59524.213,
+            "std": 23736.212925141586,
+            "min": 20138.0,
+            "25%": 38675.25,
+            "50%": 58805.0,
+            "75%": 79792.25,
+            "max": 99676.0
+        }
+    },
+    "geography": {
+        "top_countries": {
+            "India": 228,
+            "United States": 174,
+            "Vietnam": 82,
+            "Brazil": 78,
+            "Philippines": 78,
+            "Indonesia": 77,
+            "Pakistan": 76,
+            "Japan": 75,
+            "Mexico": 73,
+            "Germany": 59
+        },
+        "continent_distribution": {
+            "Asia": 616,
+            "North America": 247,
+            "South America": 78,
+            "Europe": 59
+        },
+        "income_by_continent": {
+            "Asia": 59450.26136363636,
+            "Europe": 60478.1186440678,
+            "North America": 60700.40890688259,
+            "South America": 55662.07692307692
+        }
+    },
+    "profession": {
+        "common_professions": {
+            "Students": 246,
+            "Waiting staff": 194,
+            "Labor/Worker": 186,
+            "driver": 113,
+            "Engineer": 65
+        },
+        "income_by_profession": {
+            "Artist": 52275.97872340425,
+            "Cashier": 55651.05357142857,
+            "Engineer": 63344.03076923077,
+            "Labor/Worker": 60497.93010752688,
+            "Manager": 60601.12962962963,
+            "Students": 59241.09756097561,
+            "Teacher": 63575.46153846154,
+            "Waiting staff": 59516.75257731959,
+            "driver": 59374.70796460177
+        },
+        "debt_by_profession": {
+            "Artist": 0.5319148936170213,
+            "Cashier": 0.5535714285714286,
+            "Engineer": 0.6307692307692307,
+            "Labor/Worker": 0.6075268817204301,
+            "Manager": 0.6666666666666666,
+            "Students": 0.6056910569105691,
+            "Teacher": 0.6153846153846154,
+            "Waiting staff": 0.5721649484536082,
+            "driver": 0.6106194690265486
+        }
+    },
+    "behavior": {
+        "platform_usage": {
+            "TikTok": 273,
+            "Instagram": 256,
+            "YouTube": 250,
+            "Facebook": 221
+        },
+        "top_video_categories": {
+            "Jokes/Memes": 179,
+            "Life Hacks": 162,
+            "Gaming": 119,
+            "Vlogs": 114,
+            "Pranks": 110
+        },
+        "engagement_stats": {
+            "count": 1000.0,
+            "mean": 4997.159,
+            "std": 2910.053700579984,
+            "min": 15.0,
+            "25%": 2415.75,
+            "50%": 5016.0,
+            "75%": 7540.25,
+            "max": 9982.0
+        }
+    },
+    "financial": {
+        "debt_distribution": {
+            "true": 0.599,
+            "false": 0.401
+        },
+        "property_ownership": {
+            "true": 0.542,
+            "false": 0.458
+        },
+        "income_debt_correlation": 0.8501108678207695
+    },
+    "advanced": {
+        "time_spent_vs_engagement": -0.03374291335704664,
+        "device_usage": {
+            "Smartphone": 585,
+            "Tablet": 283,
+            "Computer": 132
+        },
+        "top_engagement_times": {
+            "2:00 PM": 149,
+            "9:00 PM": 117,
+            "5:00 PM": 92,
+            "4:25 PM": 77,
+            "3:55 PM": 70
+        }
+    }
+}

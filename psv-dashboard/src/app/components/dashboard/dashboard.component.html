@@ -3,11 +3,17 @@
     <!-- Financial Overview Tab -->
       <p-tabPanel header="Financial Overview">
         <ng-template pTemplate="header">
-          <div class="tab-header">
-            <i class="pi pi-home tab-icon" aria-hidden="true"></i>
+          <div class="tab-header-modern">
+            <i class="pi pi-wallet tab-icon" aria-hidden="true"></i>
             <span class="tab-title">Financial Overview</span>
           </div>
         </ng-template>
+
+
+        <div class="navigate-section">
+          <button (click)="goToPredictor()">➕ Predict New Product</button>
+        </div>
+        
 
       <!-- Charts Row -->
       <div class="dashboard-row">
@@ -84,7 +90,7 @@
     </p-tabPanel>
 
     <!-- Product Analysis Tab -->
-      <p-tabPanel header="Product Analysis">
+    <p-tabPanel header="Product Analysis" (click)="$event.preventDefault()">
         <ng-template pTemplate="header">
           <div class="tab-header">
             <i class="pi pi-chart-bar tab-icon" aria-hidden="true"></i>
@@ -120,7 +126,7 @@
               <div class="card">
                 <h5>Product Search</h5>
                 <div class="formgroup-inline mb-3">
-                  <div class="search-box-container w-full">
+                  <div class="search-box-container w-full" tabindex="-1">
                     <!-- Debug Info -->
                     <div *ngIf="products" class="mb-2">
                       <small class="text-muted">Available Products: {{products.length}}</small>
@@ -257,6 +263,16 @@
                 (onChange)="onCountryChange($event)">
               </p-dropdown>
             </div>
+
+            <h2>Social Media Analytics</h2>
+              <pre>{{ socialAnalytics | json }}</pre>
+
+              <h2>Transaction Analytics</h2>
+              <pre>{{ transactionAnalytics | json }}</pre>
+
+              <h2>User Data Analytics</h2>
+              <pre>{{ userDataAnalytics | json }}</pre>
+
 
             <!-- Platform Recommendation Data -->
             <div class="platform-data" *ngIf="platformDataForChart && platformDataForChart.length > 0">

@@ -22,6 +22,8 @@ import { SalesDialogComponent } from './sales-dialog/sales-dialog.component';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { DialogModule } from 'primeng/dialog';
+import { ApiService } from '../../services/api.service';
+import { Router } from '@angular/router';
 
 
 @Pipe({ name: 'chartData', standalone: true })
@@ -103,6 +105,10 @@ export class DashboardComponent implements OnInit {
     trends: 'expanded'
   };
 
+  socialAnalytics: any;
+  transactionAnalytics: any;
+  userDataAnalytics: any;
+
   // Financial data
   spendingByCategory: { [key: string]: number } = {};
   monthlyTrends: { [key: string]: number } = {};
@@ -169,7 +175,9 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private financialService: FinancialService,
-    private productService: ProductService
+    private productService: ProductService,
+    private apiService: ApiService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -178,7 +186,27 @@ export class DashboardComponent implements OnInit {
 
     // Load product list
     this.loadProducts();
+    this.loadAnalytics();
   }
+
+  goToPredictor() {
+    this.router.navigate(['/predictor']);
+  }
+
+  loadAnalytics() {
+    this.apiService.getSocialAnalytics().subscribe(data => {
+      this.socialAnalytics = data;
+    });
+
+    this.apiService.getTransactionAnalytics().subscribe(data => {
+      this.transactionAnalytics = data;
+    });
+
+    this.apiService.getUserDataAnalytics().subscribe(data => {
+      this.userDataAnalytics = data;
+    });
+  }
+
 
   // Open sales dialog method
   openSalesDialog() {
@@ -195,6 +223,8 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
+
+
 
   onSalesDialogSubmit(event: any) {
     console.log('Sales dialog submit success:', event);

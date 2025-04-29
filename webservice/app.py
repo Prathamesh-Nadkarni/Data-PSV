@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
+import pandas as pd
 from flask_jwt_extended import (
     create_access_token, jwt_required, get_jwt_identity, JWTManager, get_jwt
 )
@@ -12,6 +13,7 @@ from Analysis.DataAnalytics import analyze_transactions
 from DataSourcing.JobQueue import submit_sales_job
 from DataSourcing.SQLliteCreate import createDB, authenticate_user, register_user, get_user_security_status
 from DataSourcing.SQLRead import fetch_all_product_names, fetch_sales_by_product, fetch_sales_by_category
+import joblib
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:4200"}}, supports_credentials=True)
@@ -125,6 +127,8 @@ def get_best_platform():
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     
+
+
 @app.route('/get_products', methods=['GET'])
 @jwt_required()
 def get_products():
@@ -184,7 +188,129 @@ def user_security_status():
         app.logger.error(f"Error fetching user status: {str(e)}")
         return jsonify({"error": "Error fetching user status"}), 500
 
+
+# Folder paths
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODELS_DIR = os.path.join(BASE_DIR, 'Data', 'models')
+ANALYTICS_DIR = os.path.join(BASE_DIR, 'Data', 'analytics_output')
+
+
+# Load analytics outputs
+def load_analytics(file_name):
+    try:
+        with open(os.path.join(ANALYTICS_DIR, file_name), 'r') as f:
+            import json
+            return json.load(f)
+    except Exception as e:
+        return {"error": str(e)}
+
+# Load models
+def load_model(model_name):
+    try:
+        return joblib.load(os.path.join(MODELS_DIR, model_name))
+    except Exception as e:
+        return None
+
+# Load preprocessor
+def load_preprocessor():
+    return joblib.load(os.path.join(MODELS_DIR, "preprocessing_pipeline.pkl"))
+
+# -----------------------------------
+# Analytics Endpoints
+# -----------------------------------
+
+@app.route('/analytics/social', methods=['GET'])
+def get_social_analytics():
+    return jsonify(load_analytics("social_media_analytics.json"))
+
+@app.route('/analytics/transactions', methods=['GET'])
+def get_transactions_analytics():
+    return jsonify(load_analytics("transactions_analysis.json"))
+
+@app.route('/analytics/userdata', methods=['GET'])
+def get_user_data_analytics():
+    return jsonify(load_analytics("user_data_analysis.json"))
+
+# -----------------------------------
+# Model Prediction Endpoint
+# -----------------------------------
+
+@app.route('/predict', methods=['POST'])
+def predict_sales():
+    """
+    Request JSON Format:
+    {
+        "country": "USA",
+        "category": "Electronics",
+        "product_name": "iPhone 14",
+        "sales": 1000.0
+    }
+    """
+    try:
+        # 1. Get input JSON
+        data = request.get_json()
+
+        # 2. Load preprocessor and model
+        preprocessor = load_preprocessor()
+        model = load_model("random_forest_model.pkl")  # Default using Random Forest
+
+        if model is None or preprocessor is None:
+            return jsonify({"error": "Model or Preprocessor not found"}), 500
+
+        # 3. Prepare input DataFrame
+        input_df = pd.DataFrame([data])
+
+        # 4. Apply preprocessing
+        input_processed = preprocessor.transform(input_df)
+
+        # 5. Predict
+        prediction = model.predict(input_processed)
+
+        return jsonify({
+            "predicted_quantity": int(round(prediction[0]))
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
 # ------------------ PUBLIC DATA ENDPOINTS ------------------
+
+@app.route('/categories', methods=['GET'])
+def get_categories():
+    try:
+        import sqlite3
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        DB_PATH = os.path.join(BASE_DIR, 'Data', 'sqllite-db', 'sales_data.db')
+        if not os.path.exists(DB_PATH):
+            return jsonify({"error": f"Database file not found at {DB_PATH}"}), 500
+        conn = sqlite3.connect(DB_PATH)  # Adjust path as needed
+        df = pd.read_sql_query("SELECT DISTINCT category FROM sales", conn)
+        categories = df['category'].dropna().unique().tolist()
+        conn.close()
+        return jsonify(categories)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/products', methods=['GET'])
+def get_products_by_category():
+    try:
+        category = request.args.get('category')
+        if not category:
+            return jsonify([])
+
+        import sqlite3
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        DB_PATH = os.path.join(BASE_DIR, 'Data', 'sqllite-db', 'sales_data.db')
+        if not os.path.exists(DB_PATH):
+            return jsonify({"error": f"Database file not found at {DB_PATH}"}), 500
+        conn = sqlite3.connect(DB_PATH)  # Adjust path as needed
+        query = "SELECT DISTINCT product_name FROM sales WHERE category = ?"
+        df = pd.read_sql_query(query, conn, params=(category,))
+        products = df['product_name'].dropna().tolist()
+        conn.close()
+        return jsonify(products)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/sales_by_product', methods=['GET'])
 @jwt_required()
@@ -249,6 +375,15 @@ def submit_sales_job_endpoint():
     except Exception as e:
         app.logger.error(f"Error submitting sales job: {str(e)}")
         return jsonify({"error": "Error submitting sales job"}), 500
+
+
+# -----------------------------------
+# Health Check
+# -----------------------------------
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    return "API is running."
 
 # ------------------ APP INIT ------------------
 

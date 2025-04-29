@@ -1,0 +1,68 @@
+{
+    "account_types": {
+        "depository": 96,
+        "credit": 32,
+        "investment": 32,
+        "loan": 32
+    },
+    "account_subtypes": {
+        "credit card": 32,
+        "savings": 16,
+        "checking": 16,
+        "cd": 16,
+        "money market": 16,
+        "ira": 16,
+        "401k": 16,
+        "student": 16,
+        "mortgage": 16,
+        "hsa": 16,
+        "cash management": 16
+    },
+    "top_merchants": {
+        "United Airlines": 32,
+        "Uber": 32,
+        "Starbucks": 22,
+        "McDonald's": 22,
+        "FUN": 16,
+        "KFC": 16
+    },
+    "monthly_spending": {
+        "2023-04": 71407.55,
+        "2023-05": 116353.34,
+        "2023-06": 116353.34,
+        "2023-07": 116353.34,
+        "2023-08": 116353.34,
+        "2023-09": 116353.34,
+        "2023-10": 116353.34,
+        "2023-11": 116353.34,
+        "2023-12": 116353.34,
+        "2024-01": 116353.34,
+        "2024-02": 116353.34,
+        "2024-03": 116353.34,
+        "2024-04": 116353.34,
+        "2024-05": 116353.34,
+        "2024-06": 116374.12,
+        "2024-07": 116374.12,
+        "2024-08": 150237.62,
+        "2024-09": 116374.12,
+        "2024-10": 121874.12,
+        "2024-11": 116374.12,
+        "2024-12": 116374.12,
+        "2025-01": 117374.12,
+        "2025-02": 117374.12,
+        "2025-03": 168764.82,
+        "2025-04": 74010.44
+    },
+    "category_spending": {
+        "Food and Drink, Restaurants, Fast Food": 597,
+        "Travel, Airlines and Aviation Services": 591,
+        "Payment, Credit Card": 554,
+        "Food and Drink, Restaurants, Coffee Shop": 328,
+        "Transfer, Deposit": 281,
+        "Food and Drink, Restaurants": 32,
+        "Travel, Taxi": 32,
+        "Transfer, Debit": 26,
+        "Transfer, Payroll": 16,
+        "Shops, Sporting Goods": 16
+    }
+}

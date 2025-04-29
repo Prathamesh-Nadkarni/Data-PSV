@@ -166,6 +166,28 @@
   100% { left: 100%; }
 }
 
+.navigate-section {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.navigate-section button {
+  padding: 10px 16px; 
+  background: linear-gradient(to right, #28a745, #20c997);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.navigate-section button:hover {
+  background: linear-gradient(to right, #218838, #17a2b8);
+}
+
+
 /* Dialog positioning */
 app-sales-dialog {
   position: fixed !important;
@@ -509,6 +531,7 @@ app-sales-dialog > * {
   position: relative;
   overflow: hidden;
 }
+
 
 .tab-header {
   display: flex;

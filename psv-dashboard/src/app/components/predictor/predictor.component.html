@@ -1,0 +1,52 @@
+<div class="predictor-container">
+    <div class="predictor-card">
+      <h2>📦 Predict Product Quantity</h2>
+  
+      <form (ngSubmit)="predict()">
+        <!-- Country dropdown -->
+        <label for="country">🌍 Country</label>
+        <select id="country" name="country" [(ngModel)]="input.country" required>
+          <option value="" disabled selected>Select a country</option>
+          <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+        </select>
+  
+        <!-- Category dropdown -->
+        <label for="category">📂 Category</label>
+        <select id="category" name="category" [(ngModel)]="input.category" (change)="onCategoryChange()" required>
+        <option value="" disabled selected>Select a category</option>
+        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+        </select>
+
+        <!-- Product dropdown (based on category) -->
+        <label for="product_name">📱 Product Name</label>
+        <select id="product_name" name="product_name" [(ngModel)]="input.product_name" required>
+        <option value="" disabled selected>Select a product</option>
+        <option *ngFor="let p of products" [value]="p">{{ p }}</option>
+        </select>
+
+  
+        <label for="sales">💰 Sales</label>
+        <input type="number" id="sales" name="sales" [(ngModel)]="input.sales" placeholder="Sale Price per unit" required>
+  
+        <button type="submit">🔍 Predict</button>
+      </form>
+  
+      <div *ngIf="predictionResult" class="result-box">
+        <h3>🔮 Predicted Quantity:</h3>
+        <p *ngIf="predictionResult.predicted_quantity">
+          <strong>{{ predictionResult.predicted_quantity }}</strong>
+        </p>
+      
+        <h3 *ngIf="predictionResult.predicted_sales">💰 Predicted Sales:</h3>
+        <p *ngIf="predictionResult.predicted_sales">
+          <strong>{{ predictionResult.predicted_sales | number:'1.0-0' }}</strong>
+        </p>
+      
+        <p *ngIf="predictionResult.error" class="error">
+          {{ predictionResult.error }}
+        </p>
+      </div>
+      
+    </div>
+  </div>
+  
